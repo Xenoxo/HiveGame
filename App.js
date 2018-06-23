@@ -25,14 +25,18 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       color:"orange",
-      playPiece:{id:0, x:90, y:350, l:55},
+      playPieces:[{id:0, x:90, y:350, l:55}],
+      hexObject:{},
     }
   }
 
   generateHex(x,y,l){
     let coordArray = [];
     let hexCoords = "";
-    let apoth = (Math.sqrt(3)/2*l)
+    let apoth = (Math.sqrt(3)/2*l);
+
+    let testObj = {x:x, y:y, l:l};//building the object to be stored in state
+
     for (var i = 0; i <= 5; i++) {
       if(i == 0){
         coordArray.push(x);
@@ -55,13 +59,21 @@ export default class App extends React.Component {
       }
     }
 
+    //parses the array and creates text
     for (var i = 0; i <= coordArray.length - 1; i++) {
-      if(i%2 === 0)
+      if(i%2 === 0){
         hexCoords += coordArray[i] + ',';
-      else
-        hexCoords += coordArray[i]+" ";
+      } else {
+        hexCoords += coordArray[i]+' ';
+      }
     }
-    console.log(hexCoords);
+    testObj.polyCoords = hexCoords;
+
+    testObj.adjCoords = {x:172.5, y:302.3686027918559}
+
+        //this.setState({hexObject:{x:15}});
+    console.log(testObj);
+    //console.log(this.state.hexObject);
     return hexCoords;
   }
 
@@ -73,16 +85,21 @@ export default class App extends React.Component {
         scale='1'
         stroke="purple"
         strokeWidth="1"        
-        onPress={this.showMoves}
+        onPress={this.drawAdjacentHexes}
       />);
   }
 
-  showMoves = () => {
-    //var test = this.state.playPiece;
-    //each hex is stored in a database
+  hexOn = () => {
 
-    console.log(this.state.playPiece);
-  }  
+  }
+
+  drawAdjacentHexes = () => {
+    //this will search all adjacent coords and draw them....but how will it return it?
+    //
+    //there needs to be single consistent tracker for all game pieces
+    //
+
+  }
 
   render() {
     return (
@@ -93,20 +110,11 @@ export default class App extends React.Component {
         width="400">
         {this.hexCreator()}
 
-      <Polygon
-        points={this.generateHex(172.5, 302.3686027918559, 55)}
-        fill={this.state.color}
-        scale='1'
-        stroke="purple"
-        strokeWidth="1"
-        onPress={this.showMoves}
-      />)
-
       </Svg>
         <TestComponent />
         <Button
-          title="create"
-          onPress={this.showMoves}
+          title="+"
+          onPress={this.hexOn}
         />      
       </View>
     );
