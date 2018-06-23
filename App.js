@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Button, View, TouchableOpacity } from 'react-native';
-
 import Svg,{
     Circle,
     Ellipse,
@@ -18,13 +17,15 @@ import Svg,{
     Defs,
     Stop} from 'react-native-svg';
 
+import Hexagons from './Hexagons.js'
+import TestComponent from './TestComponent'
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       color:"orange",
       playPiece:{id:0, x:90, y:350, l:55},
-      HEX_COORDS:[40,35,65,35,77.5,56.7,65,78.4,40,78.4,27.5,56.7],
     }
   }
 
@@ -56,7 +57,7 @@ export default class App extends React.Component {
 
     for (var i = 0; i <= coordArray.length - 1; i++) {
       if(i%2 === 0)
-        hexCoords += coordArray[i]+",";
+        hexCoords += coordArray[i] + ',';
       else
         hexCoords += coordArray[i]+" ";
     }
@@ -70,6 +71,8 @@ export default class App extends React.Component {
         points={this.generateHex(90,350,55)}
         fill={this.state.color}
         scale='1'
+        stroke="purple"
+        strokeWidth="1"        
         onPress={this.showMoves}
       />);
   }
@@ -77,19 +80,30 @@ export default class App extends React.Component {
   showMoves = () => {
     //var test = this.state.playPiece;
     //each hex is stored in a database
+
     console.log(this.state.playPiece);
   }  
 
   render() {
     return (
       <View style={styles.container}>
-       <Svg
+      
+      <Svg
         height="500"
         width="400">
-
         {this.hexCreator()}
 
-        </Svg> 
+      <Polygon
+        points={this.generateHex(172.5, 302.3686027918559, 55)}
+        fill={this.state.color}
+        scale='1'
+        stroke="purple"
+        strokeWidth="1"
+        onPress={this.showMoves}
+      />)
+
+      </Svg>
+        <TestComponent />
         <Button
           title="create"
           onPress={this.showMoves}
