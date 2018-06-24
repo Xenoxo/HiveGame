@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Button, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Button, View, TouchableOpacity, Text } from 'react-native';
 import Svg,{
     Circle,
     Ellipse,
@@ -12,7 +12,6 @@ import Svg,{
     Polyline,
     Rect,
     Symbol,
-    Text,
     Use,
     Defs,
     Stop} from 'react-native-svg';
@@ -25,7 +24,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       color:"orange",
-      playPieces:[{id:0, x:90, y:350, l:55}],
+      playPieces:[{id:0, x:90, y:350, l:55},{id:0, x:172.5, y:302.3686027918559, l:55}],
       hexObject:{},
     }
   }
@@ -72,13 +71,13 @@ export default class App extends React.Component {
     testObj.adjCoords = {x:172.5, y:302.3686027918559}
 
         //this.setState({hexObject:{x:15}});
-    console.log(testObj);
+    //console.log(testObj);
     //console.log(this.state.hexObject);
     return hexCoords;
   }
 
   hexCreator(){
-    return (
+    return ( //https://stackoverflow.com/questions/35471921/programmatically-add-a-component-in-react-native
       <Polygon
         points={this.generateHex(90,350,55)}
         fill={this.state.color}
@@ -98,20 +97,33 @@ export default class App extends React.Component {
     //
     //there needs to be single consistent tracker for all game pieces
     //
-
   }
 
   render() {
+    let Arr = this.state.playPieces.map((a, i) => {
+      let {x, y, l} = a;
+      return (
+        <Polygon
+          key={i}
+          points={this.generateHex(x, y, l)}
+          fill={this.state.color}
+          scale='1'
+          stroke="purple"
+          strokeWidth="1"        
+          onPress={this.drawAdjacentHexes}
+        />);
+    });
+
+    console.log('ARR AFTER PROCESSING ' + Arr);
+
     return (
       <View style={styles.container}>
-      
       <Svg
-        height="500"
-        width="400">
-        {this.hexCreator()}
-
+        height="400"
+        width="400"
+      >
+        { Arr }
       </Svg>
-        <TestComponent />
         <Button
           title="+"
           onPress={this.hexOn}
