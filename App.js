@@ -92,10 +92,20 @@ export default class App extends React.Component {
     let arr = this.state.playPieces;
     //console.log('before removing '+arr[0]);
     if ( arr.length > 1 ) {
-      // console.log('this is what is removed '+arr.pop());
+      arr.pop()
+      //console.log('this is what is removed '+arr.pop());
+      // console.log('SHOULD SEE THIS ONCE PER CLICK');
+      // //let tmp = arr.splice(-1, 1);
+      // let tmp = arr.pop();
+      // console.log(tmp);
       this.setState({playPieces:arr});
 
+      // console.log(temp);
+      // this.setState({playPieces:playPiece});
     } else {
+      arr.push({id:1, x:172.5, y:302.3686027918559, l:55});
+      this.setState({playPieces:arr});
+      //this.setState({playPieces:playPieces.push({id:1, x:172.5, y:302.3686027918559, l:55})});
       //this.setState({playPieces:playPieces.push({id:1, x:172.5, y:302.3686027918559, l:55})});
       console.log('in the else');
     }
@@ -135,7 +145,7 @@ export default class App extends React.Component {
         { Arr }
       </Svg>
         <Button
-          title="+"
+          title="toggle"
           onPress={this.hexToggle}
         />      
       </View>
