@@ -24,12 +24,16 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       color:"orange",
-      playPieces:[{id:0, x:90, y:350, l:55}, {id:1, x:172.5, y:302.3686027918559, l:55}, {id:2, x:25, y:15, l:55}],
+      playPieces:[{id:0, x:90, y:350, l:55}],
+      adjacentHexes:[],
+      showAdjacent: false,
+      tmp:[{id:0, x:90, y:350, l:55}, {id:1, x:172.5, y:302.3686027918559, l:55}, {id:2, x:25, y:15, l:55}],
       hexObject:{},
     }
   }
 
-  generateHex(x,y,l){
+  //generateHexCoordsCoords
+  generateHexCoords(x,y,l){
     let coordArray = [];
     let hexCoords = "";
     let apoth = (Math.sqrt(3)/2*l);
@@ -69,17 +73,13 @@ export default class App extends React.Component {
     testObj.polyCoords = hexCoords;
 
     testObj.adjCoords = {x:172.5, y:302.3686027918559}
-
-        //this.setState({hexObject:{x:15}});
-    //console.log(testObj);
-    //console.log(this.state.hexObject);
     return hexCoords;
   }
 
   hexCreator(){
     return ( //https://stackoverflow.com/questions/35471921/programmatically-add-a-component-in-react-native
       <Polygon
-        points={this.generateHex(90,350,55)}
+        points={this.generateHexCoords(90,350,55)}
         fill={this.state.color}
         scale='1'
         stroke="purple"
@@ -91,41 +91,68 @@ export default class App extends React.Component {
   hexToggle = () => {
     let arr = this.state.playPieces;
     //console.log('before removing '+arr[0]);
-    if ( arr.length > 1 ) {
+    if ( arr.length > 0 ) {
       arr.pop()
-      //console.log('this is what is removed '+arr.pop());
-      // console.log('SHOULD SEE THIS ONCE PER CLICK');
-      // //let tmp = arr.splice(-1, 1);
-      // let tmp = arr.pop();
-      // console.log(tmp);
       this.setState({playPieces:arr});
-
-      // console.log(temp);
-      // this.setState({playPieces:playPiece});
     } else {
-      arr.push({id:1, x:172.5, y:302.3686027918559, l:55});
+      arr.push({id:0, x:90, y:350, l:55});
       this.setState({playPieces:arr});
-      //this.setState({playPieces:playPieces.push({id:1, x:172.5, y:302.3686027918559, l:55})});
-      //this.setState({playPieces:playPieces.push({id:1, x:172.5, y:302.3686027918559, l:55})});
       console.log('in the else');
     }
   }
 
   drawAdjacentHexes = () => {
-    //this will search all adjacent coords and draw them....but how will it return it?
-    //
-    //there needs to be single consistent tracker for all game pieces
-    //
+    //all adjacent hexes are stored as an object in each Hex object, when I click here, this goes through the list of adj hexes and draws them all
+    let xcoord = 90;
+    let ycoord = 350;
+    let apoth = ((Math.sqrt(3)/2)*55);
+
+    let tempAdj = [];
+
+    for ( var i = 0; i < 6; i++ ){
+      console.log('generating adj hex #'+i);
+      if(i == 0){
+        tempAdj.push({x:xcoord, y:ycoord - (2 * apoth), l:55});
+      }
+      //  else if(i == 1){
+      //   coordArray.push(x+l);
+      //   coordArray.push(y);
+      // }else if(i == 2){
+      //   coordArray.push(x + (1.5*l));
+      //   coordArray.push(y - apoth);
+      // }else if(i == 3){
+      //   coordArray.push(x + l);
+      //   coordArray.push(y - (2*apoth));
+      // }else if(i == 4){
+      //   coordArray.push(x);
+      //   coordArray.push(y - (2*apoth));
+      // }else if(i == 5){
+      //   coordArray.push(x - (0.5*l));
+      //   coordArray.push(y - apoth);
+      // }
+    }
+    this.setState({
+      adjacentHexes:tempAdj,
+      showAdjacent:!this.state.showAdjacent,
+    });
+    // this.state.adjacentHexes.length >= 1 && this.state.showAdjacent;
+    
+
+    // }
+    // console.log('here is the temp adj hexes: '+ JSON.Stringify(tempAdj) );
+    //console.log('here is the temp adj hexes: '+JSON.Stringify(tempAdj[0], null, 4));
   }
 
   render() {
+    let adjHexes;
+    
     let Arr = this.state.playPieces.map((a, i) => {
       let {x, y, l} = a;
       console.log('What we see in the render() ' + a.x);
       return (
         <Polygon
           key={i}
-          points={this.generateHex(x, y, l)}
+          points={this.generateHexCoords(x, y, l)}
           fill={this.state.color}
           scale='1'
           stroke="purple"
@@ -133,6 +160,24 @@ export default class App extends React.Component {
           onPress={this.drawAdjacentHexes}
         />);
     });
+
+    if (this.state.adjacentHexes.length >= 1 && this.state.showAdjacent){
+      console.log('SHOULD ONLY SEE THIS IF YOU CLICK');
+      adjHexes = this.state.adjacentHexes.map((a, i) => {
+        let {x, y, l} = a;
+        // console.log('What we see in the render() ' + a.x);
+        return (
+          <Polygon
+            key={i}
+            points={this.generateHexCoords(x, y, l)}
+            fill={this.state.color}
+            scale='1'
+            stroke="purple"
+            strokeWidth="1"        
+            // onPress={this.drawAdjacentHexes}
+          />);
+      });
+    }
 
     // console.log('ARR AFTER PROCESSING ' + Arr);
 
@@ -143,9 +188,10 @@ export default class App extends React.Component {
         width="400"
       >
         { Arr }
+        { adjHexes }
       </Svg>
         <Button
-          title="toggle"
+          title="add/subtract"
           onPress={this.hexToggle}
         />      
       </View>
