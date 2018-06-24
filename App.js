@@ -24,7 +24,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       color:"orange",
-      playPieces:[{id:0, x:90, y:100}],
+      playPieces:[],
       adjacentHexes:[],
       HEX_EDGE:55,
       HEX_APOTHEM:0,
@@ -43,34 +43,50 @@ export default class App extends React.Component {
   }
 
   //Given an x and y coordinate, will return coords for hex given HEX_EDGE size
+  //
+  // test for id in the future...no need to build all coords if id exists?
   generateHexCoords(x,y){
     let hexCoords = "";
     let R = this.state.HEX_EDGE;
     let apoth = this.state.HEX_APOTHEM;
+    let tempAdj = [];
+    let temp_playPieces = {...this.state.playPieces};
+    console.log(temp_playPieces[0].hexCoords);
 
     for (var i = 0; i <= 5; i++) {
+      console.log('we running here?')
       switch (i){
         case 0:
           hexCoords += (x + ',' + y + ' ');
+          tempAdj.push({x:x, y:y - (2 * apoth)});
           break;
         case 1:
           hexCoords += ((x + R) + ',' + y + ' ');
+          tempAdj.push({x:x + (1.5 * R), y:y - apoth});
           break;
         case 2:
           hexCoords += ((x + (1.5 * R)) + ',' + (y + apoth) + ' ');
+          tempAdj.push({x:x + (1.5 * R), y:y + apoth});
           break;
         case 3:
           hexCoords += ((x + R) + ',' + (y + (2 * apoth)) + ' ');
+          tempAdj.push({x:x, y:y + (2 * apoth)});
           break;
         case 4:
           hexCoords += (x + ',' + (y + (2 * apoth)) + ' ');
+          tempAdj.push({x:x - (1.5 * R), y:y + apoth});
           break;
         case 5:
           hexCoords += ((x - (0.5 * R)) + ',' + (y + apoth) + ' ');
+          tempAdj.push({x:x - (1.5 * R), y:y - apoth});
           break;
       }
     }
-    console.log(hexCoords);
+      // console.log(temp_playPieces[0].hexCoords = hexCoords);
+      // this.setState({ playPieces:temp_playPieces});
+      // console.log(this.state.playPieces);    
+
+//    console.log(this.state.playPieces && this.state.playPieces.HexCoords);
     return hexCoords;
   }
 
@@ -87,14 +103,84 @@ export default class App extends React.Component {
   // }
 
   //This method creates a completely new Hex, intended for new play pieces
-  hexToggle = () => {
-    let arr = this.state.playPieces;
-    //console.log('before removing '+arr[0]);
+  spawnHex = (x, y) => {
+    // let x = 90;
+    // let y = 100;
+    console.log('this is x and y '+ x + ' ' + y );
+
+    //  store all below in createHexObject()
+    //
+    // separately call draw hex...or whatever method will be in charge of that
+    let arr = this.state.playPieces; 
+    
+    //arbitrary rule for now
     if ( arr.length > 0 ) {
       arr.pop()
       this.setState({playPieces:arr});
     } else {
-      arr.push({id:0, x:90, y:100});
+      let hexCoords = "";
+      let R = this.state.HEX_EDGE;
+      let apoth = this.state.HEX_APOTHEM;
+      let tempAdj = [];
+      let tmpObj = {};
+      //let temp_playPieces = {...this.state.playPieces};
+      // console.log(temp_playPieces[0].hexCoords);
+
+      for (var i = 0; i <= 5; i++) {
+        // console.log('we running here?')
+        switch (i){
+          case 0:
+            hexCoords += (x + ',' + y + ' ');
+            //tempAdj.push({x:x, y:y - (2 * apoth)});
+            break;
+          case 1:
+            hexCoords += ((x + R) + ',' + y + ' ');
+            //tempAdj.push({x:x + (1.5 * R), y:y - apoth});
+            break;
+          case 2:
+            hexCoords += ((x + (1.5 * R)) + ',' + (y + apoth) + ' ');
+            //tempAdj.push({x:x + (1.5 * R), y:y + apoth});
+            break;
+          case 3:
+            hexCoords += ((x + R) + ',' + (y + (2 * apoth)) + ' ');
+            //tempAdj.push({x:x, y:y + (2 * apoth)});
+            break;
+          case 4:
+            hexCoords += (x + ',' + (y + (2 * apoth)) + ' ');
+            //tempAdj.push({x:x - (1.5 * R), y:y + apoth});
+            break;
+          case 5:
+            hexCoords += ((x - (0.5 * R)) + ',' + (y + apoth) + ' ');
+            //tempAdj.push({x:x - (1.5 * R), y:y - apoth});
+            break;
+        }
+      }
+
+        // console.log(temp_playPieces[0].hexCoords = hexCoords);
+        // this.setState({ playPieces:temp_playPieces});
+        // console.log(this.state.playPieces);    
+
+  //    console.log(this.state.playPieces && this.state.playPieces.HexCoords);
+      tmpObj = { id:1, x:x, y:y, hexCoords:hexCoords, adjHexCoords:[0] };
+
+
+      arr.push(tmpObj);
+      this.setState({playPieces:arr});
+      console.log('in the else and here is newest playPieces = '+this.state.playPieces[0]);
+    }
+  }
+
+  // old method to easily create a hex
+  toggleHex = () => {
+    
+    let arr = this.state.playPieces; 
+    
+    //arbitrary rule for now
+    if ( arr.length > 0 ) {
+      arr.pop()
+      this.setState({playPieces:arr});
+    } else {
+      arr.push({ id:1, x:90, y:100, hexCoords:'aaa', adjHexCoords:[0]});
       this.setState({playPieces:arr});
       //console.log('in the else');
     }
@@ -102,52 +188,52 @@ export default class App extends React.Component {
 
   drawAdjacentHexes = () => {
     //all adjacent hexes are stored as an object in each Hex object, when I click here, this goes through the list of adj hexes and draws them all
-    let xcoord = 90;
-    let ycoord = 100;
-    let l = 55;
-    let apoth = ((Math.sqrt(3)/2)*55);
+    // let tst = this.props;
+    // let xcoord = 90;
+    // let ycoord = 100;
+    // let l = 55;
+    // let apoth = ((Math.sqrt(3)/2)*55);
+    // // console.log(tst);
 
-    let tempAdj = [];
+    // let tempAdj = [];
 
-    for ( var i = 0; i < 6; i++ ){
-      console.log('generating adj hex #'+i);
-      if(i == 0){
-        tempAdj.push({x:xcoord, y:ycoord - (2 * apoth)});
-      }
-       else if(i == 1){
-        tempAdj.push({x:xcoord + (1.5 * l), y:ycoord - apoth});
-      }else if(i == 2){
-        tempAdj.push({x:xcoord + (1.5 * l), y:ycoord + apoth});
-      }else if(i == 3){
-        tempAdj.push({x:xcoord, y:ycoord + (2 * apoth)});
-      }else if(i == 4){
-        tempAdj.push({x:xcoord - (1.5 * l), y:ycoord + apoth});
-      }else if(i == 5){
-        tempAdj.push({x:xcoord - (1.5 * l), y:ycoord - apoth});
-      }
-    }
-    this.setState({
-      adjacentHexes:tempAdj,
-      showAdjacent:!this.state.showAdjacent,
-    });
-    // this.state.adjacentHexes.length >= 1 && this.state.showAdjacent;
-    
-
+    // for ( var i = 0; i < 6; i++ ){
+    //   switch (i){
+    //     case 0:
+    //       tempAdj.push({x:xcoord, y:ycoord - (2 * apoth)});
+    //       break;
+    //     case 1:
+    //       tempAdj.push({x:xcoord + (1.5 * l), y:ycoord - apoth});
+    //       break;
+    //     case 2:
+    //       tempAdj.push({x:xcoord + (1.5 * l), y:ycoord + apoth});
+    //       break;
+    //     case 3:
+    //       tempAdj.push({x:xcoord, y:ycoord + (2 * apoth)});
+    //       break;
+    //     case 4:
+    //       tempAdj.push({x:xcoord - (1.5 * l), y:ycoord + apoth});
+    //       break;
+    //     case 5:
+    //       tempAdj.push({x:xcoord - (1.5 * l), y:ycoord - apoth});
+    //       break;
+    //   }
     // }
-    // console.log('here is the temp adj hexes: '+ JSON.Stringify(tempAdj) );
-    //console.log('here is the temp adj hexes: '+JSON.Stringify(tempAdj[0], null, 4));
+    // this.setState({
+    //   adjacentHexes:tempAdj,
+    //   showAdjacent:!this.state.showAdjacent,
+    // });
+    return;
   }
 
-  render() {
-    let adjHexes;
-    
-    let Arr = this.state.playPieces.map((a, i) => {
-      let {x, y, l} = a;
-      console.log('What we see in the render() ' + a.x);
+  drawTheHexes = () => {
+    this.state.playPieces.map((a, i) => {
+      let {x, y} = a;
+      // console.log('What we see in the render() ' + a.x);
       return (
         <Polygon
           key={i}
-          points={this.generateHexCoords(x, y, l)}
+          points={this.generateHexCoords(x, y)}
           fill={this.state.color}
           scale='1'
           stroke="purple"
@@ -155,16 +241,36 @@ export default class App extends React.Component {
           onPress={this.drawAdjacentHexes}
         />);
     });
+  }
 
-    if (this.state.adjacentHexes.length >= 1 && this.state.showAdjacent){
-      console.log('SHOULD ONLY SEE THIS IF YOU CLICK');
-      adjHexes = this.state.adjacentHexes.map((a, i) => {
-        let {x, y, l} = a;
+  render() {
+    let adjHexes, Arr;
+    if (this.state.playPieces.length > 0 ) {
+      Arr = this.state.playPieces.map((a, i) => {
+        let {x, y, hexCoords} = a;
         // console.log('What we see in the render() ' + a.x);
         return (
           <Polygon
             key={i}
-            points={this.generateHexCoords(x, y, l)}
+            points={hexCoords}
+            fill={this.state.color}
+            scale='1'
+            stroke="purple"
+            strokeWidth="1"        
+            onPress={this.drawAdjacentHexes}
+          />);
+      })
+    }
+
+    if (this.state.adjacentHexes.length >= 1 && this.state.showAdjacent){
+      //console.log('SHOULD ONLY SEE THIS IF YOU CLICK');
+      adjHexes = this.state.adjacentHexes.map((a, i) => {
+        let {x, y} = a;
+        // console.log('What we see in the render() ' + a.x);
+        return (
+          <Polygon
+            key={i}
+            points={this.generateHexCoords(x, y)}
             fill="none"
             scale='1'
             stroke="purple"
@@ -174,7 +280,7 @@ export default class App extends React.Component {
       });
     }
 
-    console.log('adjHexes AFTER PROCESSING ' + adjHexes);
+    // console.log('adjHexes AFTER PROCESSING ' + adjHexes);
 
     return (
       <View style={styles.container}>
@@ -188,7 +294,7 @@ export default class App extends React.Component {
       </Svg>
         <Button
           title="add/subtract"
-          onPress={this.hexToggle}
+          onPress={ (x, y) => this.spawnHex(90, 100) }
         />      
       </View>
     );
