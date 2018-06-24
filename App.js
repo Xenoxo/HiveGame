@@ -24,7 +24,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       color:"orange",
-      playPieces:[{id:0, x:90, y:350, l:55},{id:0, x:172.5, y:302.3686027918559, l:55}],
+      playPieces:[{id:0, x:90, y:350, l:55}, {id:1, x:172.5, y:302.3686027918559, l:55}, {id:2, x:25, y:15, l:55}],
       hexObject:{},
     }
   }
@@ -88,8 +88,17 @@ export default class App extends React.Component {
       />);
   }
 
-  hexOn = () => {
+  hexToggle = () => {
+    let arr = this.state.playPieces;
+    //console.log('before removing '+arr[0]);
+    if ( arr.length > 1 ) {
+      // console.log('this is what is removed '+arr.pop());
+      this.setState({playPieces:arr});
 
+    } else {
+      //this.setState({playPieces:playPieces.push({id:1, x:172.5, y:302.3686027918559, l:55})});
+      console.log('in the else');
+    }
   }
 
   drawAdjacentHexes = () => {
@@ -102,6 +111,7 @@ export default class App extends React.Component {
   render() {
     let Arr = this.state.playPieces.map((a, i) => {
       let {x, y, l} = a;
+      console.log('What we see in the render() ' + a.x);
       return (
         <Polygon
           key={i}
@@ -114,7 +124,7 @@ export default class App extends React.Component {
         />);
     });
 
-    console.log('ARR AFTER PROCESSING ' + Arr);
+    // console.log('ARR AFTER PROCESSING ' + Arr);
 
     return (
       <View style={styles.container}>
@@ -126,7 +136,7 @@ export default class App extends React.Component {
       </Svg>
         <Button
           title="+"
-          onPress={this.hexOn}
+          onPress={this.hexToggle}
         />      
       </View>
     );
