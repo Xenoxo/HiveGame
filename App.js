@@ -24,69 +24,67 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       color:"orange",
-      playPieces:[{id:0, x:90, y:100, l:55}],
+      playPieces:[{id:0, x:90, y:100}],
       adjacentHexes:[],
+      HEX_EDGE:55,
+      HEX_APOTHEM:0,
       showAdjacent: false,
-      tmp:[{id:0, x:90, y:350, l:55}, {id:1, x:172.5, y:302.3686027918559, l:55}, {id:2, x:25, y:15, l:55}],
+      tmp:[{id:0, x:90, y:350}, {id:1, x:172.5, y:302.3686027918559}, {id:2, x:25, y:15}],
       hexObject:{},
     }
   }
 
-  //generateHexCoordsCoords
-  generateHexCoords(x,y,l){
-    let coordArray = [];
-    let hexCoords = "";
-    let apoth = (Math.sqrt(3)/2*l);
+  getInitialState(){
+    //this.setState({HEX_APOTHEM:(Math.sqrt(3)/2 * this.state.HEX_EDGE)});
+  }
 
-    let testObj = {x:x, y:y, l:l};//building the object to be stored in state
+  componentWillMount(){ //called once before render and doesn't cause re-render
+    this.setState({HEX_APOTHEM:(Math.sqrt(3)/2 * this.state.HEX_EDGE)});
+  }
+
+  //Given an x and y coordinate, will return coords for hex given HEX_EDGE size
+  generateHexCoords(x,y){
+    let hexCoords = "";
+    let R = this.state.HEX_EDGE;
+    let apoth = this.state.HEX_APOTHEM;
 
     for (var i = 0; i <= 5; i++) {
-      if(i == 0){
-        coordArray.push(x);
-        coordArray.push(y);
-      } else if(i == 1){
-        coordArray.push(x+l);
-        coordArray.push(y);
-      }else if(i == 2){
-        coordArray.push(x + (1.5*l));
-        coordArray.push(y + apoth);
-      }else if(i == 3){
-        coordArray.push(x + l);
-        coordArray.push(y + (2*apoth));
-      }else if(i == 4){
-        coordArray.push(x);
-        coordArray.push(y + (2*apoth));
-      }else if(i == 5){
-        coordArray.push(x - (0.5*l));
-        coordArray.push(y + apoth);
+      switch (i){
+        case 0:
+          hexCoords += (x + ',' + y + ' ');
+          break;
+        case 1:
+          hexCoords += ((x + R) + ',' + y + ' ');
+          break;
+        case 2:
+          hexCoords += ((x + (1.5 * R)) + ',' + (y + apoth) + ' ');
+          break;
+        case 3:
+          hexCoords += ((x + R) + ',' + (y + (2 * apoth)) + ' ');
+          break;
+        case 4:
+          hexCoords += (x + ',' + (y + (2 * apoth)) + ' ');
+          break;
+        case 5:
+          hexCoords += ((x - (0.5 * R)) + ',' + (y + apoth) + ' ');
+          break;
       }
     }
-
-    //parses the array and creates text
-    for (var i = 0; i <= coordArray.length - 1; i++) {
-      if(i%2 === 0){
-        hexCoords += coordArray[i] + ',';
-      } else {
-        hexCoords += coordArray[i]+' ';
-      }
-    }
-    testObj.polyCoords = hexCoords;
-
-    testObj.adjCoords = {x:172.5, y:302.3686027918559}
+    console.log(hexCoords);
     return hexCoords;
   }
 
-  hexCreator(){
-    return ( //https://stackoverflow.com/questions/35471921/programmatically-add-a-component-in-react-native
-      <Polygon
-        points={this.generateHexCoords(90,350,55)}
-        fill={this.state.color}
-        scale='1'
-        stroke="purple"
-        strokeWidth="1"        
-        onPress={this.drawAdjacentHexes}
-      />);
-  }
+  // hexCreator(){
+  //   return ( //https://stackoverflow.com/questions/35471921/programmatically-add-a-component-in-react-native
+  //     <Polygon
+  //       points={this.generateHexCoords(90,350,55)}
+  //       fill={this.state.color}
+  //       scale='1'
+  //       stroke="purple"
+  //       strokeWidth="1"        
+  //       onPress={this.drawAdjacentHexes}
+  //     />);
+  // }
 
   //This method creates a completely new Hex, intended for new play pieces
   hexToggle = () => {
@@ -96,9 +94,9 @@ export default class App extends React.Component {
       arr.pop()
       this.setState({playPieces:arr});
     } else {
-      arr.push({id:0, x:90, y:100, l:55});
+      arr.push({id:0, x:90, y:100});
       this.setState({playPieces:arr});
-      console.log('in the else');
+      //console.log('in the else');
     }
   }
 
@@ -114,18 +112,18 @@ export default class App extends React.Component {
     for ( var i = 0; i < 6; i++ ){
       console.log('generating adj hex #'+i);
       if(i == 0){
-        tempAdj.push({x:xcoord, y:ycoord - (2 * apoth), l:55});
+        tempAdj.push({x:xcoord, y:ycoord - (2 * apoth)});
       }
        else if(i == 1){
-        tempAdj.push({x:xcoord + (1.5 * l), y:ycoord - apoth, l:55});
+        tempAdj.push({x:xcoord + (1.5 * l), y:ycoord - apoth});
       }else if(i == 2){
-        tempAdj.push({x:xcoord + (1.5 * l), y:ycoord + apoth, l:55});
+        tempAdj.push({x:xcoord + (1.5 * l), y:ycoord + apoth});
       }else if(i == 3){
-        tempAdj.push({x:xcoord, y:ycoord + (2 * apoth), l:55});
+        tempAdj.push({x:xcoord, y:ycoord + (2 * apoth)});
       }else if(i == 4){
-        tempAdj.push({x:xcoord - (1.5 * l), y:ycoord + apoth, l:55});
+        tempAdj.push({x:xcoord - (1.5 * l), y:ycoord + apoth});
       }else if(i == 5){
-        tempAdj.push({x:xcoord - (1.5 * l), y:ycoord - apoth, l:55});
+        tempAdj.push({x:xcoord - (1.5 * l), y:ycoord - apoth});
       }
     }
     this.setState({
@@ -183,6 +181,7 @@ export default class App extends React.Component {
       <Svg
         height="400"
         width="400"
+        fill="green"
       >
         { Arr }
         { adjHexes }
