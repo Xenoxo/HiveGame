@@ -62,7 +62,9 @@ export default class App extends React.Component {
     }
   }
 
-  //  Given an x and y coordinate, will return coords for hex given HEX_EDGE size
+  //  INPUT an X and Y coordinate
+  //  RETURNS coord string
+  //
   generateHexCoords(x, y){
     let hexCoords = "";
     let R = this.state.HEX_EDGE;
@@ -126,15 +128,17 @@ export default class App extends React.Component {
 
   // This method will loop through the adjHex array of the given hex and draw them
   drawAdjacentHexes = () => {
-    return;
+    // console.log(this.state.showAdjacent);
+    let showAdjacent = !this.state.showAdjacent;
+    this.setState({ showAdjacent: showAdjacent });
+    // return this.state.showAdjacent;
   }
 
   render() {
     let adjHexes, Arr;
     if (this.state.playPieces.length > 0 ) {
       Arr = this.state.playPieces.map((a, i) => {
-        let {x, y, hexCoords} = a;
-        // console.log('What we see in the render() ' + a.x);
+        let { hexCoords } = a;
         return (
           <Polygon
             key={i}
@@ -145,7 +149,7 @@ export default class App extends React.Component {
             strokeWidth="1"        
             onPress={this.drawAdjacentHexes}
           />);
-      })
+      });
     }
 
     // if (this.state.adjacentHexes.length >= 1 && this.state.showAdjacent){
@@ -165,6 +169,37 @@ export default class App extends React.Component {
     //       />);
     //   });
     // }
+
+    if (this.state.showAdjacent){
+      console.log("FACE");
+      adjHexes = this.state.tmp.map((a, i) => {
+        let { hexCoords } = a;
+        return (
+          <Polygon
+            key={i}
+            points={this.generateHexCoords(200, 50)}
+            fill={this.state.color}
+            scale='1'
+            stroke="purple"
+            strokeWidth="1"        
+            onPress={this.drawAdjacentHexes}
+          />);
+      });      
+      // adjHexes = this.state.adjacentHexes.map((a, i) => {
+      //   let {x, y} = a;
+      //   // console.log('What we see in the render() ' + a.x);
+      //   return (
+      //     <Polygon
+      //       key={i}
+      //       points={this.generateHexCoords(x, y)}
+      //       fill="none"
+      //       scale='1'
+      //       stroke="purple"
+      //       strokeWidth="1"        
+      //       // onPress={this.drawAdjacentHexes}
+      //     />);
+      // });
+    }
 
     // console.log('adjHexes AFTER PROCESSING ' + adjHexes);
 
