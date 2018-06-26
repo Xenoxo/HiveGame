@@ -42,7 +42,9 @@ export default class App extends React.Component {
     this.setState({HEX_APOTHEM:(Math.sqrt(3)/2 * this.state.HEX_EDGE)});
   }
 
-  //This method creates a completely new Hex, intended for new play pieces
+  //  Creates a hex in the playPieces store
+  //  Complete with id and adjacent hexes coords
+  // 
   spawnHex = (x, y) => {
     let arr = this.state.playPieces;
     
@@ -50,15 +52,14 @@ export default class App extends React.Component {
     //  arbitrary rule for now
     if ( arr.length > 0 ) {
       arr.pop()
-      this.setState({playPieces:arr});
-      console.log (this.state.playPieces);
+      this.setState({ playPieces:arr });
+      // console.log (this.state.playPieces);
     } else {
       let hexCoords = this.generateHexCoords(x, y),
           adjHexCoords = this.populateAdjacentHexCoords(x, y),
           tmpObj = { id:1, x:x, y:y, hexCoords:hexCoords, adjHexCoords:adjHexCoords }; //hardcoded the ID for now......
       arr.push(tmpObj);
       this.setState({ playPieces:arr });
-      //console.log (this.state.playPieces);
     }
   }
 
@@ -135,7 +136,10 @@ export default class App extends React.Component {
   }
 
   render() {
-    let adjHexes, Arr;
+    let Arr, adjHexes;
+    //  The engine to spawn hexes
+    //  only spawns what is in the playPieces store
+    //
     if (this.state.playPieces.length > 0 ) {
       Arr = this.state.playPieces.map((a, i) => {
         let { hexCoords } = a;
@@ -152,30 +156,10 @@ export default class App extends React.Component {
       });
     }
 
-    // if (this.state.adjacentHexes.length >= 1 && this.state.showAdjacent){
-    //   //console.log('SHOULD ONLY SEE THIS IF YOU CLICK');
-    //   adjHexes = this.state.adjacentHexes.map((a, i) => {
-    //     let {x, y} = a;
-    //     // console.log('What we see in the render() ' + a.x);
-    //     return (
-    //       <Polygon
-    //         key={i}
-    //         points={this.generateHexCoords(x, y)}
-    //         fill="none"
-    //         scale='1'
-    //         stroke="purple"
-    //         strokeWidth="1"        
-    //         // onPress={this.drawAdjacentHexes}
-    //       />);
-    //   });
-    // }
-
     if (this.state.showAdjacent){
-      console.log("FACE");
       let test = this.state.playPieces[0];
-      
-      adjHexes = test.adjHexCoords.map((a, i) => {
-        console.log("a is "+a.x +" and y is "+a.y);
+          adjHexes = test.adjHexCoords.map((a, i) => {
+        // console.log("a is "+a.x +" and y is "+a.y);
         let { x, y } = a;
         return (
           <Polygon
@@ -188,33 +172,16 @@ export default class App extends React.Component {
             onPress={this.drawAdjacentHexes}
           />);
       });      
-      // adjHexes = this.state.adjacentHexes.map((a, i) => {
-      //   let {x, y} = a;
-      //   // console.log('What we see in the render() ' + a.x);
-      //   return (
-      //     <Polygon
-      //       key={i}
-      //       points={this.generateHexCoords(x, y)}
-      //       fill="none"
-      //       scale='1'
-      //       stroke="purple"
-      //       strokeWidth="1"        
-      //       // onPress={this.drawAdjacentHexes}
-      //     />);
-      // });
     } else {
       adjHexes = '';
     }
-
-    // console.log('adjHexes AFTER PROCESSING ' + adjHexes);
 
     return (
       <View style={styles.container}>
       <Svg
         height="400"
         width="400"
-        fill="green"
-      >
+        fill="green">
         { Arr }
         { adjHexes }
       </Svg>
