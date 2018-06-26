@@ -172,12 +172,15 @@ export default class App extends React.Component {
 
     if (this.state.showAdjacent){
       console.log("FACE");
-      adjHexes = this.state.tmp.map((a, i) => {
-        let { hexCoords } = a;
+      let test = this.state.playPieces[0];
+      
+      adjHexes = test.adjHexCoords.map((a, i) => {
+        console.log("a is "+a.x +" and y is "+a.y);
+        let { x, y } = a;
         return (
           <Polygon
             key={i}
-            points={this.generateHexCoords(200, 50)}
+            points={this.generateHexCoords(x, y)}
             fill={this.state.color}
             scale='1'
             stroke="purple"
@@ -199,6 +202,8 @@ export default class App extends React.Component {
       //       // onPress={this.drawAdjacentHexes}
       //     />);
       // });
+    } else {
+      adjHexes = '';
     }
 
     // console.log('adjHexes AFTER PROCESSING ' + adjHexes);
