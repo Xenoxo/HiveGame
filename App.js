@@ -127,12 +127,13 @@ export default class App extends React.Component {
   }
 
   // This method will loop through the adjHex array of the given hex and draw them
-  drawAdjacentHexes(id){
-    // console.log(this.state.showAdjacent);
-    //let showAdjacent = !this.state.showAdjacent;
-    this.setState({ showAdjacent: id });
-    console.log("you pressed a hex with id = "+id)
-    // return this.state.showAdjacent;
+  toggleAdjacentHexes(id){
+    if (this.state.showAdjacent > -1 ) {
+      this.setState({ showAdjacent: -1 });
+    } else {
+      this.setState({ showAdjacent: id });  
+    }
+    // console.log("you pressed a hex with id = "+id)
   }
 
   render() {
@@ -148,7 +149,7 @@ export default class App extends React.Component {
             scale='1'
             stroke="purple"
             strokeWidth="1"        
-            onPress={ () => this.drawAdjacentHexes(i) }
+            onPress={ () => this.toggleAdjacentHexes(i) }
           />);
       });
     }
