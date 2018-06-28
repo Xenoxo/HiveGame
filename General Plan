@@ -1,0 +1,27 @@
+Phase 1: Basic Hex movement
++ Build an app that allows a user to create and remove a hex
++ Clicking on the hex will show potential moves that are directly adjacent to the hex
++ Clicking on an adjacent hex will move the original hex
+
+Phase 2: Standardize the Game components
++ Figure out if zooming in/out, scrolling is possible
++ Create the "default view" this would be the view that every game starts at
++ Define the "center" for this default view...if I generate a piece, it will always be at the center
+
+Phase 3: UI Design
++ Standardize the hex pieces in size
++ Design the game board (including places to have the pieces)
+	+ Use a simple UI GAME PIECE x 3, instead of implementing 3 objects
++ Make the first move always generate the piece in the middle
+
+Phase 4: Add Rules for the Game
++ Give player ability to click on a reserve piece and spaw it
++ Subsequent piece spawns after the first can only be adjacent to existing hexboard
++ Implement some sort of system to keep track of piece positions etc
++ Apply actual game rules to the game
+	+ Big one - start easy with Queen, then go out in difficulty
++ Add turns / Win condition etc...
+
+Phase 5: Multiplayer
++ Sync the app up with firebase or some tool
++ Wire the game up for multiplayer
