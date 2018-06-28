@@ -42,7 +42,7 @@ export default class App extends React.Component {
     this.setState({HEX_APOTHEM:(Math.sqrt(3)/2 * this.state.HEX_EDGE)});
   }
 
-  createHex(x, y){
+  createHex(x, y){ // temporary method to generate a hex
     if (this.state.createHex){
       this.spawnHex(x, y)
     } else {
@@ -54,35 +54,21 @@ export default class App extends React.Component {
   }
 
   //This method creates a completely new Hex, intended for new play pieces
-  spawnHex = (x, y, update) => {
-    let arr = this.state.playPieces;
-    
-    if (update){
-      console.log("update pieces here");
-      console.log(x + ", " + y);
-      console.log(this.state.showAdjacentOfHexID);
-      let hexCoords = this.generateHexCoords(x, y),
-          adjHexCoords = this.populateAdjacentHexCoords(x, y),
-          tmpObj = { x:x, y:y, hexCoords:hexCoords, adjHexCoords:adjHexCoords };
+  spawnHex = (x, y, move) => {
+    let arr = this.state.playPieces,
+        hexCoords = this.generateHexCoords(x, y),
+        adjHexCoords = this.populateAdjacentHexCoords(x, y),
+        tmpObj = { x:x, y:y, hexCoords:hexCoords, adjHexCoords:adjHexCoords };
+    if (move){ // Used only if hex coords need to be updated
       arr[this.state.showAdjacentOfHexID] = tmpObj;
-    } else {
-      let hexCoords = this.generateHexCoords(x, y),
-          adjHexCoords = this.populateAdjacentHexCoords(x, y),
-          tmpObj = { x:x, y:y, hexCoords:hexCoords, adjHexCoords:adjHexCoords };
+    } else { // Used only to generate new playPieces
       arr.push(tmpObj);
-      //console.log (this.state.playPieces);
     }
-    this.setState({ playPieces:arr });
+    this.setState({
+      playPieces:arr,
+      showAdjacentOfHexID:-1
+    });
   }
-
-  moveHex(x, y){
-    // Update the entire object of the playpiece to match this new hex position
-    console.log(x + ", " + y);
-    // take the x, y of where it should go
-    // find play piece object that will move ... 
-    // build a new playPiece give new X Y*******
-    // set the old playPiece to the new one
-  }  
 
   //  INPUT an X and Y coordinate
   //  RETURNS coord string
@@ -179,8 +165,7 @@ export default class App extends React.Component {
     if ( this.state.showAdjacentOfHexID > -1 ){
       adjHexes = this.state.playPieces[this.state.showAdjacentOfHexID].adjHexCoords.map((a, i) => {
         let { x, y } = a;
-        console.log("show adjacent x,y is= "+x + ", "+y);
-        
+        //console.log("show adjacent x,y is= "+x + ", "+y);
         return (
           <Polygon
             key={i}
