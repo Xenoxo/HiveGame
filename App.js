@@ -28,7 +28,7 @@ export default class App extends React.Component {
       adjacentHexes:[],
       HEX_EDGE:55,
       HEX_APOTHEM:0,
-      showAdjacent: -1,
+      showAdjacentOfHexID: -1,
       createHex: true,
       hexObject:{},
     }
@@ -60,14 +60,19 @@ export default class App extends React.Component {
     if (update){
       console.log("update pieces here");
       console.log(x + ", " + y);
+      console.log(this.state.showAdjacentOfHexID);
+      let hexCoords = this.generateHexCoords(x, y),
+          adjHexCoords = this.populateAdjacentHexCoords(x, y),
+          tmpObj = { x:x, y:y, hexCoords:hexCoords, adjHexCoords:adjHexCoords };
+      arr[this.state.showAdjacentOfHexID] = tmpObj;
     } else {
       let hexCoords = this.generateHexCoords(x, y),
           adjHexCoords = this.populateAdjacentHexCoords(x, y),
           tmpObj = { x:x, y:y, hexCoords:hexCoords, adjHexCoords:adjHexCoords };
       arr.push(tmpObj);
-      this.setState({ playPieces:arr });
       //console.log (this.state.playPieces);
     }
+    this.setState({ playPieces:arr });
   }
 
   moveHex(x, y){
@@ -145,10 +150,10 @@ export default class App extends React.Component {
 
   // This method will loop through the adjHex array of the given hex and draw them
   toggleAdjacentHexes(id){
-    if (this.state.showAdjacent > -1 ) {
-      this.setState({ showAdjacent: -1 });
+    if (this.state.showAdjacentOfHexID > -1 ) {
+      this.setState({ showAdjacentOfHexID:-1 });
     } else {
-      this.setState({ showAdjacent: id });  
+      this.setState({ showAdjacentOfHexID : id });  
     }
     // console.log("you pressed a hex with id = "+id)
   }
@@ -171,8 +176,8 @@ export default class App extends React.Component {
       });
     }
 
-    if ( this.state.showAdjacent > -1 ){
-      adjHexes = this.state.playPieces[this.state.showAdjacent].adjHexCoords.map((a, i) => {
+    if ( this.state.showAdjacentOfHexID > -1 ){
+      adjHexes = this.state.playPieces[this.state.showAdjacentOfHexID].adjHexCoords.map((a, i) => {
         let { x, y } = a;
         console.log("show adjacent x,y is= "+x + ", "+y);
         
