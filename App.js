@@ -29,7 +29,7 @@ export default class App extends React.Component {
       HEX_EDGE:55,
       HEX_APOTHEM:0,
       showAdjacent: -1,
-      tmp:[{id:0, x:90, y:350}, {id:1, x:172.5, y:302.3686027918559}, {id:2, x:25, y:15}],
+      createHex: true,
       hexObject:{},
     }
   }
@@ -42,25 +42,42 @@ export default class App extends React.Component {
     this.setState({HEX_APOTHEM:(Math.sqrt(3)/2 * this.state.HEX_EDGE)});
   }
 
-  //This method creates a completely new Hex, intended for new play pieces
-  spawnHex = (x, y) => {
-    let arr = this.state.playPieces;
-    
-    //  CASE for removing the hex
-    //  arbitrary rule for now
-    if ( arr.length > 0 ) {
+  createHex(x, y){
+    if (this.state.createHex){
+      this.spawnHex(x, y)
+    } else {
+      let arr = this.state.playPieces;
       arr.pop()
       this.setState({ playPieces:arr });
-      console.log(this.state.playPieces);
+    }
+    this.setState({ createHex: !this.state.createHex });
+  }
+
+  //This method creates a completely new Hex, intended for new play pieces
+  spawnHex = (x, y, update) => {
+    let arr = this.state.playPieces;
+    
+    if (update){
+      console.log("update pieces here");
+      console.log(x + ", " + y);
     } else {
       let hexCoords = this.generateHexCoords(x, y),
           adjHexCoords = this.populateAdjacentHexCoords(x, y),
-          tmpObj = { id:1, x:x, y:y, hexCoords:hexCoords, adjHexCoords:adjHexCoords }; //hardcoded the ID for now......
+          tmpObj = { x:x, y:y, hexCoords:hexCoords, adjHexCoords:adjHexCoords };
       arr.push(tmpObj);
       this.setState({ playPieces:arr });
       //console.log (this.state.playPieces);
     }
   }
+
+  moveHex(x, y){
+    // Update the entire object of the playpiece to match this new hex position
+    console.log(x + ", " + y);
+    // take the x, y of where it should go
+    // find play piece object that will move ... 
+    // build a new playPiece give new X Y*******
+    // set the old playPiece to the new one
+  }  
 
   //  INPUT an X and Y coordinate
   //  RETURNS coord string
@@ -154,27 +171,11 @@ export default class App extends React.Component {
       });
     }
 
-    // if (this.state.adjacentHexes.length >= 1 && this.state.showAdjacent){
-    //   //console.log('SHOULD ONLY SEE THIS IF YOU CLICK');
-    //   adjHexes = this.state.adjacentHexes.map((a, i) => {
-    //     let {x, y} = a;
-    //     // console.log('What we see in the render() ' + a.x);
-    //     return (
-    //       <Polygon
-    //         key={i}
-    //         points={this.generateHexCoords(x, y)}
-    //         fill="none"
-    //         scale='1'
-    //         stroke="purple"
-    //         strokeWidth="1"        
-    //         // onPress={this.drawAdjacentHexes}
-    //       />);
-    //   });
-    // }
-
     if ( this.state.showAdjacent > -1 ){
       adjHexes = this.state.playPieces[this.state.showAdjacent].adjHexCoords.map((a, i) => {
         let { x, y } = a;
+        console.log("show adjacent x,y is= "+x + ", "+y);
+        
         return (
           <Polygon
             key={i}
@@ -183,26 +184,10 @@ export default class App extends React.Component {
             scale='1'
             stroke="purple"
             strokeWidth="1"        
-            onPress={ console.log("method for moving should be here") }
+            onPress={ () => this.spawnHex(x, y, true) }
           />);
-      });      
-      // adjHexes = this.state.adjacentHexes.map((a, i) => {
-      //   let {x, y} = a;
-      //   // console.log('What we see in the render() ' + a.x);
-      //   return (
-      //     <Polygon
-      //       key={i}
-      //       points={this.generateHexCoords(x, y)}
-      //       fill="none"
-      //       scale='1'
-      //       stroke="purple"
-      //       strokeWidth="1"        
-      //       // onPress={this.drawAdjacentHexes}
-      //     />);
-      // });
+      });
     }
-
-    // console.log('adjHexes AFTER PROCESSING ' + adjHexes);
 
     return (
       <View style={styles.container}>
@@ -216,7 +201,7 @@ export default class App extends React.Component {
       </Svg>
         <Button
           title="add/subtract"
-          onPress={ (x, y) => this.spawnHex(90, 100) }
+          onPress={ (x, y) => this.createHex(90, 100) }
         />      
       </View>
     );
@@ -234,6 +219,4 @@ const styles = StyleSheet.create({
 
 
 // THINGS TO DO //
-// Commit once I can generate adjacent hexes based on click
-//
-// get make ID for a play piece the array number for that play piece
+// 
