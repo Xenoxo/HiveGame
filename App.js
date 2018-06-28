@@ -28,7 +28,7 @@ export default class App extends React.Component {
       adjacentHexes:[],
       HEX_EDGE:55,
       HEX_APOTHEM:0,
-      showAdjacent: false,
+      showAdjacent: -1,
       tmp:[{id:0, x:90, y:350}, {id:1, x:172.5, y:302.3686027918559}, {id:2, x:25, y:15}],
       hexObject:{},
     }
@@ -50,8 +50,8 @@ export default class App extends React.Component {
     //  arbitrary rule for now
     if ( arr.length > 0 ) {
       arr.pop()
-      this.setState({playPieces:arr});
-      console.log (this.state.playPieces);
+      this.setState({ playPieces:arr });
+      console.log(this.state.playPieces);
     } else {
       let hexCoords = this.generateHexCoords(x, y),
           adjHexCoords = this.populateAdjacentHexCoords(x, y),
@@ -122,15 +122,16 @@ export default class App extends React.Component {
           break;
       }
     }
-    console.log(adjHexCoords);
+    console.log("from poplateAdjacentHexCoords = " + adjHexCoords);
     return adjHexCoords;
   }
 
   // This method will loop through the adjHex array of the given hex and draw them
-  drawAdjacentHexes = () => {
+  drawAdjacentHexes(id){
     // console.log(this.state.showAdjacent);
-    let showAdjacent = !this.state.showAdjacent;
-    this.setState({ showAdjacent: showAdjacent });
+    //let showAdjacent = !this.state.showAdjacent;
+    this.setState({ showAdjacent: id });
+    console.log("you pressed a hex with id = "+id)
     // return this.state.showAdjacent;
   }
 
@@ -147,7 +148,7 @@ export default class App extends React.Component {
             scale='1'
             stroke="purple"
             strokeWidth="1"        
-            onPress={this.drawAdjacentHexes}
+            onPress={ () => this.drawAdjacentHexes(i) }
           />);
       });
     }
@@ -170,19 +171,18 @@ export default class App extends React.Component {
     //   });
     // }
 
-    if (this.state.showAdjacent){
-      console.log("FACE");
-      adjHexes = this.state.tmp.map((a, i) => {
-        let { hexCoords } = a;
+    if ( this.state.showAdjacent > -1 ){
+      adjHexes = this.state.playPieces[this.state.showAdjacent].adjHexCoords.map((a, i) => {
+        let { x, y } = a;
         return (
           <Polygon
             key={i}
-            points={this.generateHexCoords(200, 50)}
-            fill={this.state.color}
+            points={this.generateHexCoords(x, y)}
+            fill={"none"}
             scale='1'
             stroke="purple"
             strokeWidth="1"        
-            onPress={this.drawAdjacentHexes}
+            onPress={ console.log("method for moving should be here") }
           />);
       });      
       // adjHexes = this.state.adjacentHexes.map((a, i) => {
@@ -230,3 +230,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+
+// THINGS TO DO //
+// Commit once I can generate adjacent hexes based on click
+//
+// get make ID for a play piece the array number for that play piece
