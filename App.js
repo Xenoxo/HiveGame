@@ -42,9 +42,24 @@ export default class App extends React.Component {
     this.setState({HEX_APOTHEM:(Math.sqrt(3)/2 * this.state.HEX_EDGE)});
   }
 
+<<<<<<< HEAD
   createHex(x, y){ // temporary method to generate a hex
     if (this.state.createHex){
       this.spawnHex(x, y)
+=======
+  //  Creates a hex in the playPieces store
+  //  Complete with id and adjacent hexes coords
+  // 
+  spawnHex = (x, y) => {
+    let arr = this.state.playPieces;
+    
+    //  CASE for removing the hex
+    //  arbitrary rule for now
+    if ( arr.length > 0 ) {
+      arr.pop()
+      this.setState({ playPieces:arr });
+      // console.log (this.state.playPieces);
+>>>>>>> b72bafaa9427b70561fe22c356d367398ba70ca2
     } else {
       let arr = this.state.playPieces;
       arr.pop()
@@ -145,7 +160,10 @@ export default class App extends React.Component {
   }
 
   render() {
-    let adjHexes, Arr;
+    let Arr, adjHexes;
+    //  The engine to spawn hexes
+    //  only spawns what is in the playPieces store
+    //
     if (this.state.playPieces.length > 0 ) {
       Arr = this.state.playPieces.map((a, i) => {
         let { hexCoords } = a;
@@ -162,21 +180,39 @@ export default class App extends React.Component {
       });
     }
 
+<<<<<<< HEAD
     if ( this.state.showAdjacentOfHexID > -1 ){
       adjHexes = this.state.playPieces[this.state.showAdjacentOfHexID].adjHexCoords.map((a, i) => {
         let { x, y } = a;
         //console.log("show adjacent x,y is= "+x + ", "+y);
+=======
+    if (this.state.showAdjacent){
+      let test = this.state.playPieces[0];
+          adjHexes = test.adjHexCoords.map((a, i) => {
+        // console.log("a is "+a.x +" and y is "+a.y);
+        let { x, y } = a;
+>>>>>>> b72bafaa9427b70561fe22c356d367398ba70ca2
         return (
           <Polygon
             key={i}
             points={this.generateHexCoords(x, y)}
+<<<<<<< HEAD
             fill={"none"}
+=======
+            fill={this.state.color}
+>>>>>>> b72bafaa9427b70561fe22c356d367398ba70ca2
             scale='1'
             stroke="purple"
             strokeWidth="1"        
             onPress={ () => this.spawnHex(x, y, true) }
           />);
+<<<<<<< HEAD
       });
+=======
+      });      
+    } else {
+      adjHexes = '';
+>>>>>>> b72bafaa9427b70561fe22c356d367398ba70ca2
     }
 
     return (
@@ -184,8 +220,7 @@ export default class App extends React.Component {
       <Svg
         height="400"
         width="400"
-        fill="green"
-      >
+        fill="green">
         { Arr }
         { adjHexes }
       </Svg>
