@@ -24,7 +24,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       color:"orange",
-      playPieces:[],
+      playPieces:[], //the defacto holder of pieces and their properties
       adjacentHexes:[],
       HEX_EDGE:55,
       HEX_APOTHEM:0,
@@ -35,14 +35,16 @@ export default class App extends React.Component {
   }
 
   getInitialState(){
-    //this.setState({HEX_APOTHEM:(Math.sqrt(3)/2 * this.state.HEX_EDGE)});
   }
 
-  componentWillMount(){ //called once before render and doesn't cause re-render
-    this.setState({HEX_APOTHEM:(Math.sqrt(3)/2 * this.state.HEX_EDGE)});
+  // Called once before render and doesn't cause re-render
+  componentWillMount(){ 
+    this.setState({HEX_APOTHEM:(Math.sqrt(3)/2 * this.state.HEX_EDGE)}); // One of the constants used for hex calculations
   }
 
-  createHex(x, y){ // temporary method to generate a hex
+  // temporary method to generate a hex
+  // 
+  createHex(x, y){ 
     if (this.state.createHex){
       this.spawnHex(x, y)
     } else {
@@ -53,7 +55,10 @@ export default class App extends React.Component {
     this.setState({ createHex: !this.state.createHex });
   }
 
-  //This method creates a completely new Hex, intended for new play pieces
+  //  This method does 1 of 2 things depending on the 'move' boolean
+  //    1: Updates the play piece to the new position and updating hexcoords and adjhexcoords
+  //    2: creates a completely new Hex, intended for new play pieces
+  //
   spawnHex = (x, y, move) => {
     let arr = this.state.playPieces,
         hexCoords = this.generateHexCoords(x, y),
@@ -70,8 +75,8 @@ export default class App extends React.Component {
     });
   }
 
-  //  INPUT an X and Y coordinate
-  //  RETURNS coord string
+  //  GIVEN an X and Y coordinate
+  //  RETURNS coord string used by any Polygon component
   //
   generateHexCoords(x, y){
     let hexCoords = "";
@@ -103,7 +108,10 @@ export default class App extends React.Component {
     return hexCoords;
   }  
 
-  //  Given an x and y coords, will return an array with each index having a {X, Y} coord representing all 6 adjacent hexes
+  //  GIVEN an x and y coords
+  //  RETURNS an array with each index having a {X, Y} coord
+  //  representing all 6 adjacent hexes
+  //
   populateAdjacentHexCoords = (x, y) => {
     let R = this.state.HEX_EDGE;
     let apoth = this.state.HEX_APOTHEM;
@@ -134,14 +142,16 @@ export default class App extends React.Component {
     return adjHexCoords;
   }
 
-  // This method will loop through the adjHex array of the given hex and draw them
+  //  GIVEN the 'id' of the hex
+  //  This method will loop through the adjHex array
+  //  property of the given hex piece and draw them
+  //
   toggleAdjacentHexes(id){
     if (this.state.showAdjacentOfHexID > -1 ) {
       this.setState({ showAdjacentOfHexID:-1 });
     } else {
       this.setState({ showAdjacentOfHexID : id });  
     }
-    // console.log("you pressed a hex with id = "+id)
   }
 
   render() {
